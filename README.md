@@ -7,8 +7,8 @@
 [![Code Maintainability](https://img.shields.io/codeclimate/maintainability-percentage/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four)
 [![Issues in Code](https://img.shields.io/codeclimate/issues/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four/issues)
 [![Technical Debt](https://img.shields.io/codeclimate/tech-debt/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four)
-[![CodeScene Code Health](https://codescene.io/projects/13371/status-badges/code-health)](https://codescene.io/projects/13371/jobs/latest-successful/results)
-[![CodeScene System Mastery](https://codescene.io/projects/13371/status-badges/system-mastery)](https://codescene.io/projects/13371/jobs/latest-successful/results)
+[![CodeScene Code Health](https://codescene.io/projects/13531/status-badges/code-health)](https://codescene.io/projects/13531/jobs/latest-successful/results)
+[![CodeScene System Mastery](https://codescene.io/projects/13531/status-badges/system-mastery)](https://codescene.io/projects/13531/jobs/latest-successful/results)
 
 This repository implements the [Connect Four Kata as found on CodeWars](https://www.codewars.com/kata/56882731514ec3ec3d000009).
 
@@ -18,35 +18,6 @@ Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-connect-four) wh
 an [Open Source License](https://www.jetbrains.com/community/opensource/) for this project ❤️.
 
 # Development
-
-### Creating a New Project From this Template
-
-After having forked this starter project, you'll need to adapt the project names inside this solution, fix **the links**
-in the badges section above, the textual description in this README.md file and - if using
-[CodeClimate (Quality)](https://codeclimate.com) - add the `CC_TEST_REPORTER_ID` to the github project secrets:
-
-1. Change the LICENSE to your needs
-
-2. Renaming from `DotnetStarter` to ...
-   - rename the `.sln`, the contained projects and the root namespaces to match your new project
-   - adapt the test entry in the `.github/workflow/dotnet.yml` file
-   - adapt the environment variable in `tools/dupfinder.sh` and `tools/dupfinder.bat`, respectively
-   - adapt the test directory in the `.gitpod.yml` file
-
-3. If you have a [coveralls.io](https://coveralls.io) account, add the new project and replace the corresponding `wonderbird/kata-connect-four` entries above by your Github name and the name of this project.
-
-4. If you have a [CodeClimate (Quality)](https://codeclimate.com) account,
-   - add the new project and replace the corresponding `wonderbird/kata-connect-four` entries above by your Github name and the name of this project
-   - get the `CC_TEST_REPORTER_ID` from the [CodeClimate](https://codeclimate.com) test coverage settings and set it as a repository secret in your Github project
-
-5. If you have a [CodeScene](https://codescene.io) account,
-   - add the new project and trigger an analysis
-   - in the [CodeScene](https://codescene.io) status badges configuration, tick the checboxes next to Code Health and System Mastery in order to make the badges visible to the public
-   - in the badges section above, replace the [CodeScene](https://codescene.io) project number `13371` by the number of your project
-
-6. Delete all badges from above, which you don't need
-
-7. Commit and push in order to trigger a build. Then check whether all badges work as expected, i.e. click them and check whether they redirect to the correct projects.
 
 ### Quick-Start
 
