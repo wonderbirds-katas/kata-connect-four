@@ -1,20 +1,20 @@
-# Starter Template for new .NET Projects
+# Connect Four Kata Implementation (Codewars.com)
 
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/dotnet-starter)
-[![Build Status Badge](https://github.com/wonderbird/dotnet-starter/workflows/.NET/badge.svg)](https://github.com/wonderbird/dotnet-starter/actions?query=workflow%3A%22.NET%22)
-[![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbird/dotnet-starter)](https://coveralls.io/github/wonderbird/dotnet-starter)
-[![Test Coverage (codeclimate)](https://img.shields.io/codeclimate/coverage-letter/wonderbird/dotnet-starter)](https://codeclimate.com/github/wonderbird/dotnet-starter/trends/test_coverage_total)
-[![Code Maintainability](https://img.shields.io/codeclimate/maintainability-percentage/wonderbird/dotnet-starter)](https://codeclimate.com/github/wonderbird/dotnet-starter)
-[![Issues in Code](https://img.shields.io/codeclimate/issues/wonderbird/dotnet-starter)](https://codeclimate.com/github/wonderbird/dotnet-starter/issues)
-[![Technical Debt](https://img.shields.io/codeclimate/tech-debt/wonderbird/dotnet-starter)](https://codeclimate.com/github/wonderbird/dotnet-starter)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/kata-connect-four)
+[![Build Status Badge](https://github.com/wonderbird/kata-connect-four/workflows/.NET/badge.svg)](https://github.com/wonderbird/kata-connect-four/actions?query=workflow%3A%22.NET%22)
+[![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbird/kata-connect-four)](https://coveralls.io/github/wonderbird/kata-connect-four)
+[![Test Coverage (codeclimate)](https://img.shields.io/codeclimate/coverage-letter/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four/trends/test_coverage_total)
+[![Code Maintainability](https://img.shields.io/codeclimate/maintainability-percentage/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four)
+[![Issues in Code](https://img.shields.io/codeclimate/issues/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four/issues)
+[![Technical Debt](https://img.shields.io/codeclimate/tech-debt/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four)
 [![CodeScene Code Health](https://codescene.io/projects/13371/status-badges/code-health)](https://codescene.io/projects/13371/jobs/latest-successful/results)
 [![CodeScene System Mastery](https://codescene.io/projects/13371/status-badges/system-mastery)](https://codescene.io/projects/13371/jobs/latest-successful/results)
 
-This repository implements the [Roman Numerals Helper Kata as found on CodeWars](https://www.codewars.com/kata/51b66044bce5799a7f000003/train/csharp)
+This repository implements the [Connect Four Kata as found on CodeWars](https://www.codewars.com/kata/56882731514ec3ec3d000009).
 
 ## Thanks
 
-Many thanks to [JetBrains](https://www.jetbrains.com/?from=dotnet-starter) who provide
+Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-connect-four) who provide
 an [Open Source License](https://www.jetbrains.com/community/opensource/) for this project ❤️.
 
 # Development
@@ -33,10 +33,10 @@ in the badges section above, the textual description in this README.md file and 
    - adapt the environment variable in `tools/dupfinder.sh` and `tools/dupfinder.bat`, respectively
    - adapt the test directory in the `.gitpod.yml` file
 
-3. If you have a [coveralls.io](https://coveralls.io) account, add the new project and replace the corresponding `wonderbird/dotnet-starter` entries above by your Github name and the name of this project.
+3. If you have a [coveralls.io](https://coveralls.io) account, add the new project and replace the corresponding `wonderbird/kata-connect-four` entries above by your Github name and the name of this project.
 
 4. If you have a [CodeClimate (Quality)](https://codeclimate.com) account,
-   - add the new project and replace the corresponding `wonderbird/dotnet-starter` entries above by your Github name and the name of this project
+   - add the new project and replace the corresponding `wonderbird/kata-connect-four` entries above by your Github name and the name of this project
    - get the `CC_TEST_REPORTER_ID` from the [CodeClimate](https://codeclimate.com) test coverage settings and set it as a repository secret in your Github project
 
 5. If you have a [CodeScene](https://codescene.io) account,
@@ -50,7 +50,7 @@ in the badges section above, the textual description in this README.md file and 
 
 ### Quick-Start
 
-Click the [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/dotnet-starter) badge (also above) to launch a web IDE.
+Click the [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/kata-connect-four) badge (also above) to launch a web IDE.
 
 If that does not work for you or if you'd like to have the project on your local machine, then continue reading.
 
