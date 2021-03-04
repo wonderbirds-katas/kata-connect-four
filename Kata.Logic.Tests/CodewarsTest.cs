@@ -6,26 +6,11 @@ namespace Kata.Logic.Tests
     public class CodewarsTest
     {
 #pragma warning disable xUnit1004 // Test methods should not be skipped
-        [Fact(Skip = "Not implemented")]
-        public void FirstTest()
-        {
-            List<string> myList = new List<string>()
-            {
-                "A_Red",
-                "B_Yellow",
-                "A_Red",
-                "B_Yellow",
-                "A_Red",
-                "B_Yellow",
-                "G_Red",
-                "B_Yellow"
-            };
-            Assert.Equal("Yellow", ConnectFour.WhoIsWinner(myList));
-        }
 
         [Fact(Skip = "Not implemented")]
         public void SecondTest()
         {
+            // Diagonal von D6 nach G3
             List<string> myList = new List<string>()
             {
                 "C_Yellow",
@@ -63,6 +48,7 @@ namespace Kata.Logic.Tests
         [Fact(Skip = "Not implemented")]
         public void ThirdTest()
         {
+            // First 4 wins - here red has the first four (row) before yellow (diagonal)
             List<string> myList = new List<string>()
             {
                 "A_Yellow",

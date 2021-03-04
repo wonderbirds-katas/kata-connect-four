@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Kata.Logic
 {
@@ -27,64 +29,111 @@ namespace Kata.Logic
             return piece;
         }
 
-        private static int ParsePieceColumn(string piecePosition)
-        {
-            var column = piecePosition[0] == 'A' ? 0 : 1;
-            return column;
-        }
+        private static int ParsePieceColumn(string piecePosition) => piecePosition[0] - 'A';
     }
 
     public class Engine
     {
+        private const int SameColorPiecesRequiredToWin = 4;
         private readonly Board _board;
 
         public Engine(Board board) => _board = board;
 
         public Player CalculateWinner()
         {
-            var consecutiveRed = 0;
+            using var columns = _board.GetPiecesByColumn().GetEnumerator();
+            var winner = CalculateWinnerByGroupedBoard(columns);
 
-            foreach (var piece in _board.GetPiecesByColumn())
+            if (winner == Player.None)
+            {
+                using var rows = _board.GetPiecesByRow().GetEnumerator();
+                winner = CalculateWinnerByGroupedBoard(rows);
+            }
+
+            return winner;
+        }
+
+        private static Player CalculateWinnerByGroupedBoard(IEnumerator<IEnumerable<Player>> groupedBoard)
+        {
+            var winner = Player.None;
+            while (winner == Player.None && groupedBoard.MoveNext())
+            {
+                winner = CalculateWinnerByLine(groupedBoard.Current);
+            }
+
+            return winner;
+        }
+
+        private static Player CalculateWinnerByLine(IEnumerable<Player> piecesOfColumn)
+        {
+            var winner = Player.None;
+            var consecutiveRed = 0;
+            var consecutiveYellow = 0;
+
+            foreach (var piece in piecesOfColumn)
             {
                 if (piece == Player.Red)
                 {
+                    consecutiveYellow = 0;
                     ++consecutiveRed;
+                }
+                else if (piece == Player.Yellow)
+                {
+                    consecutiveRed = 0;
+                    ++consecutiveYellow;
+                }
+
+                if (consecutiveRed >= SameColorPiecesRequiredToWin)
+                {
+                    winner = Player.Red;
+                }
+
+                if (consecutiveYellow >= SameColorPiecesRequiredToWin)
+                {
+                    winner = Player.Yellow;
                 }
             }
 
-            if (consecutiveRed >= 4)
-            {
-                return Player.Red;
-            }
-
-            return Player.None;
+            return winner;
         }
     }
 
     public class Board
     {
-        private readonly Player[,] _pieces = new Player[6, 7];
+        private const int Columns = 7;
+        private const int Rows = 6;
 
-        public IEnumerable<Player> GetPiecesByColumn()
-        {
-            for (var column = 0; column < _pieces.GetUpperBound(1); column++)
-            {
-                for (var row = 0; row < _pieces.GetUpperBound(0); row++)
-                {
-                    yield return _pieces[row, column];
-                }
-            }
-        }
+        private readonly Player[,] _pieces = new Player[Rows, Columns];
+        private readonly int[] _piecesPerColumn = new int[Columns];
 
         public void AddPieceToColumn(int column, Player player)
         {
-            var numberOfPiecesInColumn = 0;
-            while (_pieces[numberOfPiecesInColumn, column] != Player.None)
-            {
-                numberOfPiecesInColumn++;
-            }
+            var numberOfPiecesInColumn = _piecesPerColumn[column];
 
             _pieces[numberOfPiecesInColumn, column] = player;
+            _piecesPerColumn[column]++;
+        }
+
+        public IEnumerable<IEnumerable<Player>> GetPiecesByColumn()
+        {
+            for (var column = 0; column < Columns; column++)
+            {
+                yield return Enumerable
+                    .Range(0, Rows)
+                    .Select(i => _pieces[i, column])
+                    .ToList();
+            }
+        }
+
+        public IEnumerable<IEnumerable<Player>> GetPiecesByRow()
+        {
+            for (var row = 0; row < Rows; ++row)
+            {
+                yield return Enumerable
+                    .Range(0, Columns)
+                    .Select(i => _pieces[row, i])
+                    .ToList();
+            }
         }
     }
 
