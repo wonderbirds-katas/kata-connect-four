@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Kata.Logic
 {
@@ -9,7 +8,7 @@ namespace Kata.Logic
         public static string WhoIsWinner(List<string> piecesPositionList)
         {
             var board = new Board();
-            var engine = new Engine(board);
+            var engine = new Engine();
 
             foreach (var piecePosition in piecesPositionList)
             {
@@ -18,7 +17,7 @@ namespace Kata.Logic
                 board.AddPieceToColumn(column, player);
             }
 
-            var winner = engine.CalculateWinner();
+            var winner = engine.CalculateWinner(board);
             return winner == Player.None ? "Draw" : winner.ToString();
         }
 
@@ -34,24 +33,72 @@ namespace Kata.Logic
 
     public class Engine
     {
-        private const int SameColorPiecesRequiredToWin = 4;
-        private readonly Board _board;
+        private List<IWinnerCalculator> WinnerCalculators = new();
 
-        public Engine(Board board) => _board = board;
-
-        public Player CalculateWinner()
+        public Engine()
         {
-            using var columns = _board.GetPiecesByColumn().GetEnumerator();
-            var winner = CalculateWinnerByGroupedBoard(columns);
+            WinnerCalculators.Add(new ColumnWinnerCalculator());
+            WinnerCalculators.Add(new RowWinnerCalculator());
+        }
 
-            if (winner == Player.None)
+        public Player CalculateWinner(Board board)
+        {
+            var winner = Player.None;
+            using var winnerCalculator = WinnerCalculators.GetEnumerator();
+
+            while (winner == Player.None && winnerCalculator.MoveNext())
             {
-                using var rows = _board.GetPiecesByRow().GetEnumerator();
-                winner = CalculateWinnerByGroupedBoard(rows);
+                winner = winnerCalculator.Current.CalculateWinner(board);
             }
 
             return winner;
         }
+    }
+
+    internal interface IWinnerCalculator
+    {
+        Player CalculateWinner(Board board);
+    }
+
+    public class RowWinnerCalculator : AbstractWinnerCalculator
+    {
+        protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
+        {
+            for (var row = 0; row < Board.Rows; ++row)
+            {
+                yield return Enumerable
+                    .Range(0, Board.Columns)
+                    .Select(i => board.GetPieceAt(row, i))
+                    .ToList();
+            }
+        }
+    }
+
+    public class ColumnWinnerCalculator : AbstractWinnerCalculator
+    {
+        protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
+        {
+            for (var column = 0; column < Board.Columns; column++)
+            {
+                yield return Enumerable
+                    .Range(0, Board.Rows)
+                    .Select(i => board.GetPieceAt(i, column))
+                    .ToList();
+            }
+        }
+    }
+
+    public abstract class AbstractWinnerCalculator : IWinnerCalculator
+    {
+        private const int SameColorPiecesRequiredToWin = 4;
+
+        public Player CalculateWinner(Board board)
+        {
+            using var columns = GetGroupedPieces(board).GetEnumerator();
+            return CalculateWinnerByGroupedBoard(columns);
+        }
+
+        protected abstract IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board);
 
         private static Player CalculateWinnerByGroupedBoard(IEnumerator<IEnumerable<Player>> groupedBoard)
         {
@@ -100,8 +147,8 @@ namespace Kata.Logic
 
     public class Board
     {
-        private const int Columns = 7;
-        private const int Rows = 6;
+        public const int Columns = 7;
+        public const int Rows = 6;
 
         private readonly Player[,] _pieces = new Player[Rows, Columns];
         private readonly int[] _piecesPerColumn = new int[Columns];
@@ -114,6 +161,8 @@ namespace Kata.Logic
             _piecesPerColumn[column]++;
         }
 
+        public Player GetPieceAt(int row, int column) => _pieces[row, column];
+
         public IEnumerable<IEnumerable<Player>> GetPiecesByColumn()
         {
             for (var column = 0; column < Columns; column++)
@@ -121,17 +170,6 @@ namespace Kata.Logic
                 yield return Enumerable
                     .Range(0, Rows)
                     .Select(i => _pieces[i, column])
-                    .ToList();
-            }
-        }
-
-        public IEnumerable<IEnumerable<Player>> GetPiecesByRow()
-        {
-            for (var row = 0; row < Rows; ++row)
-            {
-                yield return Enumerable
-                    .Range(0, Columns)
-                    .Select(i => _pieces[row, i])
                     .ToList();
             }
         }
