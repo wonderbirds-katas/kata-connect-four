@@ -39,5 +39,15 @@ namespace Kata.Logic.Tests
 
             Assert.Equal(expected, ConnectFour.WhoIsWinner(piecesPositionList));
         }
+
+        [Theory]
+        [InlineData("Red", "A_Red", "B_Yellow", "B_Red", "C_Yellow", "C_Red", "D_Yellow", "C_Red", "D_Yellow", "D_Red", "E_Yellow", "D_Red")]
+        public static void WhoIsWinner_WinByAscendingDiagonal_ReturnsWinner(params string[] testData)
+        {
+            var expected = testData[0];
+            var piecesPositionList = testData.Skip(1).ToList();
+
+            Assert.Equal(expected, ConnectFour.WhoIsWinner(piecesPositionList));
+        }
     }
 }

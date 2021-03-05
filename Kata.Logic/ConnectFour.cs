@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,6 +40,7 @@ namespace Kata.Logic
         {
             WinnerCalculators.Add(new ColumnWinnerCalculator());
             WinnerCalculators.Add(new RowWinnerCalculator());
+            WinnerCalculators.Add(new AscendingDiagonalWinnerCalculator());
         }
 
         public Player CalculateWinner(Board board)
@@ -58,6 +60,31 @@ namespace Kata.Logic
     internal interface IWinnerCalculator
     {
         Player CalculateWinner(Board board);
+    }
+
+    public class AscendingDiagonalWinnerCalculator : AbstractWinnerCalculator
+    {
+        protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
+        {
+            for (var diagonal = 0; diagonal < AscendingDiagonalCoordinateSystem.Diagonals; diagonal++)
+            {
+                throw new NotImplementedException();
+            }
+            for (var row = 0; row < Board.Rows; ++row)
+            {
+                yield return Enumerable
+                    .Range(0, Board.Columns)
+                    .Select(i => board.GetPieceAt(row, i))
+                    .ToList();
+            }
+        }
+    }
+
+    public static class AscendingDiagonalCoordinateSystem
+    {
+        public const int Diagonals = 12;
+
+        public static int Positions(int diagonal) => diagonal <= 5 ? diagonal + 1 : 12 - diagonal;
     }
 
     public class RowWinnerCalculator : AbstractWinnerCalculator
