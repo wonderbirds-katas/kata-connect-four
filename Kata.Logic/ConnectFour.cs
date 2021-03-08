@@ -40,7 +40,7 @@ namespace Kata.Logic
         {
             WinnerCalculators.Add(new ColumnWinnerCalculator());
             WinnerCalculators.Add(new RowWinnerCalculator());
-            WinnerCalculators.Add(new AscendingDiagonalWinnerCalculator());
+            WinnerCalculators.Add(new DescendingDiagonalWinnerCalculator());
         }
 
         public Player CalculateWinner(Board board)
@@ -62,13 +62,22 @@ namespace Kata.Logic
         Player CalculateWinner(Board board);
     }
 
-    public class AscendingDiagonalWinnerCalculator : AbstractWinnerCalculator
+    public class DescendingDiagonalWinnerCalculator : AbstractWinnerCalculator
     {
         protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
         {
-            for (var diagonal = 0; diagonal < AscendingDiagonalCoordinateSystem.Diagonals; diagonal++)
+            for (var diagonal = 0; diagonal < DescendingDiagonalCoordinateSystem.Diagonals; diagonal++)
             {
-                throw new NotImplementedException();
+                var positions = DescendingDiagonalCoordinateSystem.Positions(diagonal);
+                var result = new List<Player>();
+                for (var position = 0; position < positions; position++)
+                {
+                    var row = DescendingDiagonalCoordinateSystem.GetRow(diagonal, position);
+                    var column = DescendingDiagonalCoordinateSystem.GetColumn(diagonal, position);
+                    result.Add(board.GetPieceAt(row, column));
+                }
+
+                yield return result;
             }
             for (var row = 0; row < Board.Rows; ++row)
             {
@@ -80,11 +89,32 @@ namespace Kata.Logic
         }
     }
 
-    public static class AscendingDiagonalCoordinateSystem
+    public static class DescendingDiagonalCoordinateSystem
     {
         public const int Diagonals = 12;
+        private const int LongestDiagonalIndex = Diagonals / 2;
 
-        public static int Positions(int diagonal) => diagonal <= 5 ? diagonal + 1 : 12 - diagonal;
+        public static int Positions(int diagonal) => diagonal < LongestDiagonalIndex ? diagonal + 1 : Diagonals - diagonal;
+
+        public static int GetRow(int diagonal, int position)
+        {
+            if (diagonal <= LongestDiagonalIndex)
+            {
+                return position;
+            }
+
+            return diagonal - LongestDiagonalIndex + position;
+        }
+
+        public static int GetColumn(int diagonal, int position)
+        {
+            if (diagonal <= LongestDiagonalIndex)
+            {
+                return diagonal - position;
+            }
+
+            return Board.Columns - 1 - position;
+        }
     }
 
     public class RowWinnerCalculator : AbstractWinnerCalculator
