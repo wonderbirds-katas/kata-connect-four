@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,8 +39,8 @@ namespace Kata.Logic
         {
             WinnerCalculators.Add(new ColumnWinnerCalculator());
             WinnerCalculators.Add(new RowWinnerCalculator());
-            WinnerCalculators.Add(new DescendingDiagonalWinnerCalculator());
-            WinnerCalculators.Add(new AscendingDiagonalWinnerCalculator());
+            WinnerCalculators.Add(new DiagonalWinnerCalculator(new AscendingDiagonalCoordinateSystem()));
+            WinnerCalculators.Add(new DiagonalWinnerCalculator(new DescendingDiagonalCoordinateSystem()));
         }
 
         public Player CalculateWinner(Board board)
@@ -63,19 +62,23 @@ namespace Kata.Logic
         Player CalculateWinner(Board board);
     }
 
-    public class AscendingDiagonalWinnerCalculator : AbstractWinnerCalculator
+    public class DiagonalWinnerCalculator : AbstractWinnerCalculator
     {
+        private readonly DiagonalCoordinateSystem _coordinateSystem;
+
+        public DiagonalWinnerCalculator(DiagonalCoordinateSystem coordinateSystem) =>
+            _coordinateSystem = coordinateSystem;
+
         protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
         {
-            var coordinateSystem = new AscendingDiagonalCoordinateSystem();
             for (var diagonal = 0; diagonal < DiagonalCoordinateSystem.Diagonals; diagonal++)
             {
-                var positions = coordinateSystem.Positions(diagonal);
+                var positions = _coordinateSystem.Positions(diagonal);
                 var result = new List<Player>();
                 for (var position = 0; position < positions; position++)
                 {
-                    var row = coordinateSystem.GetRow(diagonal, position);
-                    var column = coordinateSystem.GetColumn(diagonal, position);
+                    var row = _coordinateSystem.GetRow(diagonal, position);
+                    var column = _coordinateSystem.GetColumn(diagonal, position);
                     result.Add(board.GetPieceAt(row, column));
                 }
 
@@ -84,17 +87,21 @@ namespace Kata.Logic
         }
     }
 
-    public class DiagonalCoordinateSystem
+    public abstract class DiagonalCoordinateSystem
     {
         public const int Diagonals = 12;
         protected const int LongestDiagonalIndex = Diagonals / 2;
 
-        public virtual int Positions(int diagonal) => diagonal < LongestDiagonalIndex ? diagonal + 1 : Diagonals - diagonal;
+        public virtual int Positions(int diagonal) =>
+            diagonal < LongestDiagonalIndex ? diagonal + 1 : Diagonals - diagonal;
+
+        public abstract int GetRow(int diagonal, int position);
+        public abstract int GetColumn(int diagonal, int position);
     }
 
     public class AscendingDiagonalCoordinateSystem : DiagonalCoordinateSystem
     {
-        public virtual int GetRow(int diagonal, int position)
+        public override int GetRow(int diagonal, int position)
         {
             if (diagonal < LongestDiagonalIndex)
             {
@@ -104,7 +111,7 @@ namespace Kata.Logic
             return position;
         }
 
-        public virtual int GetColumn(int diagonal, int position)
+        public override int GetColumn(int diagonal, int position)
         {
             if (diagonal < LongestDiagonalIndex)
             {
@@ -116,30 +123,9 @@ namespace Kata.Logic
         }
     }
 
-    public class DescendingDiagonalWinnerCalculator : AbstractWinnerCalculator
-    {
-        protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
-        {
-            var coordinateSystem = new DescendingDiagonalCoordinateSystem();
-            for (var diagonal = 0; diagonal < DiagonalCoordinateSystem.Diagonals; diagonal++)
-            {
-                var positions = coordinateSystem.Positions(diagonal);
-                var result = new List<Player>();
-                for (var position = 0; position < positions; position++)
-                {
-                    var row = coordinateSystem.GetRow(diagonal, position);
-                    var column = coordinateSystem.GetColumn(diagonal, position);
-                    result.Add(board.GetPieceAt(row, column));
-                }
-
-                yield return result;
-            }
-        }
-    }
-
     public class DescendingDiagonalCoordinateSystem : DiagonalCoordinateSystem
     {
-        public virtual int GetRow(int diagonal, int position)
+        public override int GetRow(int diagonal, int position)
         {
             if (diagonal <= LongestDiagonalIndex)
             {
@@ -149,7 +135,7 @@ namespace Kata.Logic
             return diagonal - LongestDiagonalIndex + position;
         }
 
-        public virtual int GetColumn(int diagonal, int position)
+        public override int GetColumn(int diagonal, int position)
         {
             if (diagonal <= LongestDiagonalIndex)
             {
