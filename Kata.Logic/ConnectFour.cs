@@ -253,17 +253,6 @@ namespace Kata.Logic
         }
 
         public Player GetPieceAt(int row, int column) => _pieces[row, column];
-
-        public IEnumerable<IEnumerable<Player>> GetPiecesByColumn()
-        {
-            for (var column = 0; column < Columns; column++)
-            {
-                yield return Enumerable
-                    .Range(0, Rows)
-                    .Select(i => _pieces[i, column])
-                    .ToList();
-            }
-        }
     }
 
     public enum Player
