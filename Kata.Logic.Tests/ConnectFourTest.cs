@@ -51,7 +51,7 @@ namespace Kata.Logic.Tests
         }
 
         [Theory]
-        [InlineData("Red", "A_Red", "B_Yellow", "B_Red", "C_Yellow", "C_Red", "D_Yellow", "C_Red", "D_Yellow", "D_Red", "E_Yellow", "D_Red")]
+        [InlineData("Red", "A_Red", "B_Yellow", "B_Red", "C_Yellow", "C_Red", "D_Yellow", "C_Red", "D_Yellow", "D_Red", "F_Yellow", "D_Red")]
         public static void WhoIsWinner_WinByAscendingDiagonal_ReturnsWinner(params string[] testData)
         {
             var expected = testData[0];

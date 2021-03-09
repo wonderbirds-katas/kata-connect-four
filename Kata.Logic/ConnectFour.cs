@@ -41,6 +41,7 @@ namespace Kata.Logic
             WinnerCalculators.Add(new ColumnWinnerCalculator());
             WinnerCalculators.Add(new RowWinnerCalculator());
             WinnerCalculators.Add(new DescendingDiagonalWinnerCalculator());
+            WinnerCalculators.Add(new AscendingDiagonalWinnerCalculator());
         }
 
         public Player CalculateWinner(Board board)
@@ -62,6 +63,55 @@ namespace Kata.Logic
         Player CalculateWinner(Board board);
     }
 
+    public class AscendingDiagonalWinnerCalculator : AbstractWinnerCalculator
+    {
+        protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
+        {
+            for (var diagonal = 0; diagonal < AscendingDiagonalCoordinateSystem.Diagonals; diagonal++)
+            {
+                var positions = AscendingDiagonalCoordinateSystem.Positions(diagonal);
+                var result = new List<Player>();
+                for (var position = 0; position < positions; position++)
+                {
+                    var row = AscendingDiagonalCoordinateSystem.GetRow(diagonal, position);
+                    var column = AscendingDiagonalCoordinateSystem.GetColumn(diagonal, position);
+                    result.Add(board.GetPieceAt(row, column));
+                }
+
+                yield return result;
+            }
+        }
+    }
+
+    public static class AscendingDiagonalCoordinateSystem
+    {
+        public const int Diagonals = 12;
+        private const int LongestDiagonalIndex = Diagonals / 2;
+
+        public static int Positions(int diagonal) => diagonal < LongestDiagonalIndex ? diagonal + 1 : Diagonals - diagonal;
+
+        public static int GetRow(int diagonal, int position)
+        {
+            if (diagonal < LongestDiagonalIndex)
+            {
+                return LongestDiagonalIndex - 1 - diagonal + position;
+            }
+
+            return position;
+        }
+
+        public static int GetColumn(int diagonal, int position)
+        {
+            if (diagonal < LongestDiagonalIndex)
+            {
+                return position;
+            }
+
+            var positions = Positions(diagonal);
+            return Board.Columns - (positions - position);
+        }
+    }
+
     public class DescendingDiagonalWinnerCalculator : AbstractWinnerCalculator
     {
         protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
@@ -78,13 +128,6 @@ namespace Kata.Logic
                 }
 
                 yield return result;
-            }
-            for (var row = 0; row < Board.Rows; ++row)
-            {
-                yield return Enumerable
-                    .Range(0, Board.Columns)
-                    .Select(i => board.GetPieceAt(row, i))
-                    .ToList();
             }
         }
     }
@@ -185,6 +228,11 @@ namespace Kata.Logic
                 {
                     consecutiveRed = 0;
                     ++consecutiveYellow;
+                }
+                else if (piece == Player.None)
+                {
+                    consecutiveRed = 0;
+                    consecutiveYellow = 0;
                 }
 
                 if (consecutiveRed >= SameColorPiecesRequiredToWin)
