@@ -67,14 +67,15 @@ namespace Kata.Logic
     {
         protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
         {
-            for (var diagonal = 0; diagonal < AscendingDiagonalCoordinateSystem.Diagonals; diagonal++)
+            var coordinateSystem = new AscendingDiagonalCoordinateSystem();
+            for (var diagonal = 0; diagonal < DiagonalCoordinateSystem.Diagonals; diagonal++)
             {
-                var positions = AscendingDiagonalCoordinateSystem.Positions(diagonal);
+                var positions = coordinateSystem.Positions(diagonal);
                 var result = new List<Player>();
                 for (var position = 0; position < positions; position++)
                 {
-                    var row = AscendingDiagonalCoordinateSystem.GetRow(diagonal, position);
-                    var column = AscendingDiagonalCoordinateSystem.GetColumn(diagonal, position);
+                    var row = coordinateSystem.GetRow(diagonal, position);
+                    var column = coordinateSystem.GetColumn(diagonal, position);
                     result.Add(board.GetPieceAt(row, column));
                 }
 
@@ -83,14 +84,17 @@ namespace Kata.Logic
         }
     }
 
-    public static class AscendingDiagonalCoordinateSystem
+    public class DiagonalCoordinateSystem
     {
         public const int Diagonals = 12;
-        private const int LongestDiagonalIndex = Diagonals / 2;
+        protected const int LongestDiagonalIndex = Diagonals / 2;
 
-        public static int Positions(int diagonal) => diagonal < LongestDiagonalIndex ? diagonal + 1 : Diagonals - diagonal;
+        public virtual int Positions(int diagonal) => diagonal < LongestDiagonalIndex ? diagonal + 1 : Diagonals - diagonal;
+    }
 
-        public static int GetRow(int diagonal, int position)
+    public class AscendingDiagonalCoordinateSystem : DiagonalCoordinateSystem
+    {
+        public virtual int GetRow(int diagonal, int position)
         {
             if (diagonal < LongestDiagonalIndex)
             {
@@ -100,7 +104,7 @@ namespace Kata.Logic
             return position;
         }
 
-        public static int GetColumn(int diagonal, int position)
+        public virtual int GetColumn(int diagonal, int position)
         {
             if (diagonal < LongestDiagonalIndex)
             {
@@ -116,14 +120,15 @@ namespace Kata.Logic
     {
         protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
         {
-            for (var diagonal = 0; diagonal < DescendingDiagonalCoordinateSystem.Diagonals; diagonal++)
+            var coordinateSystem = new DescendingDiagonalCoordinateSystem();
+            for (var diagonal = 0; diagonal < DiagonalCoordinateSystem.Diagonals; diagonal++)
             {
-                var positions = DescendingDiagonalCoordinateSystem.Positions(diagonal);
+                var positions = coordinateSystem.Positions(diagonal);
                 var result = new List<Player>();
                 for (var position = 0; position < positions; position++)
                 {
-                    var row = DescendingDiagonalCoordinateSystem.GetRow(diagonal, position);
-                    var column = DescendingDiagonalCoordinateSystem.GetColumn(diagonal, position);
+                    var row = coordinateSystem.GetRow(diagonal, position);
+                    var column = coordinateSystem.GetColumn(diagonal, position);
                     result.Add(board.GetPieceAt(row, column));
                 }
 
@@ -132,14 +137,9 @@ namespace Kata.Logic
         }
     }
 
-    public static class DescendingDiagonalCoordinateSystem
+    public class DescendingDiagonalCoordinateSystem : DiagonalCoordinateSystem
     {
-        public const int Diagonals = 12;
-        private const int LongestDiagonalIndex = Diagonals / 2;
-
-        public static int Positions(int diagonal) => diagonal < LongestDiagonalIndex ? diagonal + 1 : Diagonals - diagonal;
-
-        public static int GetRow(int diagonal, int position)
+        public virtual int GetRow(int diagonal, int position)
         {
             if (diagonal <= LongestDiagonalIndex)
             {
@@ -149,7 +149,7 @@ namespace Kata.Logic
             return diagonal - LongestDiagonalIndex + position;
         }
 
-        public static int GetColumn(int diagonal, int position)
+        public virtual int GetColumn(int diagonal, int position)
         {
             if (diagonal <= LongestDiagonalIndex)
             {

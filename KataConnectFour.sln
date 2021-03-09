@@ -15,7 +15,8 @@ ProjectSection(SolutionItems) = preProject
 	.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 	.gitpod.yml = .gitpod.yml
 	.gitpod.Dockerfile = .gitpod.Dockerfile
-				LICENSE = LICENSE
+    .editorconfig = .editorconfig
+    LICENSE = LICENSE
 EndProjectSection
 EndProject
 Global
