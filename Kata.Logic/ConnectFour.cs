@@ -10,14 +10,17 @@ namespace Kata.Logic
             var board = new Board();
             var engine = new Engine();
 
-            foreach (var piecePosition in piecesPositionList)
+            var winner = Player.None;
+            using var piecePositionEnumerator = piecesPositionList.GetEnumerator();
+            while(winner == Player.None && piecePositionEnumerator.MoveNext())
             {
+                var piecePosition = piecePositionEnumerator.Current;
                 var column = ParsePieceColumn(piecePosition);
                 var player = ParsePlayer(piecePosition);
                 board.AddPieceToColumn(column, player);
+                winner = engine.CalculateWinner(board);
             }
 
-            var winner = engine.CalculateWinner(board);
             return winner == Player.None ? "Draw" : winner.ToString();
         }
 

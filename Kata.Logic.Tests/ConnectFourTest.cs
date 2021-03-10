@@ -22,7 +22,7 @@ namespace Kata.Logic.Tests
 
         // Codewars FirstTest
         [InlineData("Yellow", "A_Red", "B_Yellow", "A_Red", "B_Yellow", "A_Red", "B_Yellow", "G_Red", "B_Yellow")]
-        public static void WhoIsWinner_WinByColumn_ReturnsWinner(params string[] testData)
+        public static void WhoIsWinner_CodewarsWinByColumn_ReturnsWinner(params string[] testData)
         {
             var expected = testData[0];
             var piecesPositionList = testData.Skip(1).ToList();
@@ -53,6 +53,29 @@ namespace Kata.Logic.Tests
         [Theory]
         [InlineData("Red", "A_Red", "B_Yellow", "B_Red", "C_Yellow", "C_Red", "D_Yellow", "C_Red", "D_Yellow", "D_Red", "F_Yellow", "D_Red")]
         public static void WhoIsWinner_WinByAscendingDiagonal_ReturnsWinner(params string[] testData)
+        {
+            var expected = testData[0];
+            var piecesPositionList = testData.Skip(1).ToList();
+
+            Assert.Equal(expected, ConnectFour.WhoIsWinner(piecesPositionList));
+        }
+
+        // Codewars: Second Test
+        [Theory]
+        [InlineData("Yellow", "C_Yellow", "E_Red", "G_Yellow", "B_Red", "D_Yellow", "B_Red", "B_Yellow", "G_Red", "C_Yellow", "C_Red", "D_Yellow", "F_Red", "E_Yellow", "A_Red", "A_Yellow", "G_Red", "A_Yellow", "F_Red", "F_Yellow", "D_Red", "B_Yellow", "E_Red", "D_Yellow", "A_Red", "G_Yellow", "D_Red", "D_Yellow", "C_Red")]
+        public static void WhoIsWinner_CodewarsWinByDiagonal_ReturnsWinner(params string[] testData)
+        {
+            var expected = testData[0];
+            var piecesPositionList = testData.Skip(1).ToList();
+
+            Assert.Equal(expected, ConnectFour.WhoIsWinner(piecesPositionList));
+        }
+
+        // Codewars: Third test
+        [Theory]
+        [InlineData("Red", "A_Yellow", "B_Red", "B_Yellow", "C_Red", "G_Yellow", "C_Red", "C_Yellow", "D_Red", "G_Yellow", "D_Red", "G_Yellow", "D_Red", "F_Yellow", "E_Red", "D_Yellow")]
+        [InlineData("Red", "E_Yellow", "D_Red", "C_Yellow", "E_Red", "D_Yellow", "F_Red", "F_Yellow", "F_Red", "C_Yellow", "B_Red", "G_Yellow", "G_Red", "G_Yellow", "A_Red", "B_Yellow", "G_Red", "A_Yellow")]
+        public static void WhoIsWinner_BothPlayersHaveFour_FirstPlayerWithFourWins(params string[] testData)
         {
             var expected = testData[0];
             var piecesPositionList = testData.Skip(1).ToList();
