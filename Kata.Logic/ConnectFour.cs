@@ -13,42 +13,30 @@ namespace Kata.Logic
             using var piecePositionEnumerator = piecesPositionList.GetEnumerator();
             while(winner == Player.None && piecePositionEnumerator.MoveNext())
             {
-                var piecePosition = piecePositionEnumerator.Current;
-                var column = ParsePieceColumn(piecePosition);
-                var player = ParsePlayer(piecePosition);
-                board.AddPieceToColumn(column, player);
+                board.AddPiece(piecePositionEnumerator.Current);
                 winner = engine.CalculateWinner(board);
             }
 
             return winner == Player.None ? "Draw" : winner.ToString();
         }
-
-        private static Player ParsePlayer(string piecePosition)
-        {
-            var colorString = piecePosition[2..];
-            var piece = colorString == "Red" ? Player.Red : Player.Yellow;
-            return piece;
-        }
-
-        private static int ParsePieceColumn(string piecePosition) => piecePosition[0] - 'A';
     }
 
     public class Engine
     {
-        private readonly List<WinnerCalculator> WinnerCalculators = new();
+        private readonly List<WinnerCalculator> _winnerCalculators = new();
 
         public Engine()
         {
-            WinnerCalculators.Add(new WinnerCalculator(new IdentityTransformation())); // Win by Column
-            WinnerCalculators.Add(new WinnerCalculator(new TransposedTransformation())); // Win by Row
-            WinnerCalculators.Add(new WinnerCalculator(new AscendingDiagonalTransformation()));
-            WinnerCalculators.Add(new WinnerCalculator(new DescendingDiagonalTransformation()));
+            _winnerCalculators.Add(new WinnerCalculator(new IdentityTransformation())); // Win by Column
+            _winnerCalculators.Add(new WinnerCalculator(new TransposedTransformation())); // Win by Row
+            _winnerCalculators.Add(new WinnerCalculator(new AscendingDiagonalTransformation()));
+            _winnerCalculators.Add(new WinnerCalculator(new DescendingDiagonalTransformation()));
         }
 
         public Player CalculateWinner(Board board)
         {
             var winner = Player.None;
-            using var winnerCalculator = WinnerCalculators.GetEnumerator();
+            using var winnerCalculator = _winnerCalculators.GetEnumerator();
 
             while (winner == Player.None && winnerCalculator.MoveNext())
             {
@@ -96,44 +84,33 @@ namespace Kata.Logic
             var winner = Player.None;
             while (winner == Player.None && groupedBoard.MoveNext())
             {
-                winner = CalculateWinnerByLine(groupedBoard.Current);
+                winner = CalculateWinnerByGroup(groupedBoard.Current);
             }
 
             return winner;
         }
 
-        private static Player CalculateWinnerByLine(IEnumerable<Player> piecesOfColumn)
+        private static Player CalculateWinnerByGroup(IEnumerable<Player> pieces)
         {
+            var currentColor = Player.None;
+            var count = 1;
             var winner = Player.None;
-            var consecutiveRed = 0;
-            var consecutiveYellow = 0;
 
-            foreach (var piece in piecesOfColumn)
+            foreach (var piece in pieces)
             {
-                if (piece == Player.Red)
+                if (piece == currentColor)
                 {
-                    consecutiveYellow = 0;
-                    ++consecutiveRed;
+                    count++;
                 }
-                else if (piece == Player.Yellow)
+                else
                 {
-                    consecutiveRed = 0;
-                    ++consecutiveYellow;
-                }
-                else if (piece == Player.None)
-                {
-                    consecutiveRed = 0;
-                    consecutiveYellow = 0;
+                    currentColor = piece;
+                    count = 1;
                 }
 
-                if (consecutiveRed >= SameColorPiecesRequiredToWin)
+                if (currentColor != Player.None && count == SameColorPiecesRequiredToWin)
                 {
-                    winner = Player.Red;
-                }
-
-                if (consecutiveYellow >= SameColorPiecesRequiredToWin)
-                {
-                    winner = Player.Yellow;
+                    winner = currentColor;
                 }
             }
 
@@ -212,7 +189,7 @@ namespace Kata.Logic
     public class TransposedTransformation : ICoordinateTransformation
     {
         public int HorizontalPositions => Board.Rows;
-        public int VerticalPositions => Board.Columns;
+        private static int VerticalPositions => Board.Columns;
 
         public int MaximumVerticalPosition(int horizontalPosition) => VerticalPositions;
 
@@ -224,7 +201,7 @@ namespace Kata.Logic
     public class IdentityTransformation : ICoordinateTransformation
     {
         public int HorizontalPositions => Board.Columns;
-        public int VerticalPositions => Board.Rows;
+        private static int VerticalPositions => Board.Rows;
 
         public int MaximumVerticalPosition(int horizontalPosition) => VerticalPositions;
 
@@ -241,15 +218,31 @@ namespace Kata.Logic
         private readonly Player[,] _pieces = new Player[Rows, Columns];
         private readonly int[] _piecesPerColumn = new int[Columns];
 
-        public void AddPieceToColumn(int column, Player player)
+        public Player GetPieceAt(int row, int column) => _pieces[row, column];
+
+        public void AddPiece(string piecePosition)
+        {
+            var column = ParsePieceColumn(piecePosition);
+            var player = ParsePlayer(piecePosition);
+            AddPieceToColumn(column, player);
+        }
+
+        private static Player ParsePlayer(string piecePosition)
+        {
+            var colorString = piecePosition[2..];
+            var piece = colorString == "Red" ? Player.Red : Player.Yellow;
+            return piece;
+        }
+
+        private static int ParsePieceColumn(string piecePosition) => piecePosition[0] - 'A';
+
+        private void AddPieceToColumn(int column, Player player)
         {
             var numberOfPiecesInColumn = _piecesPerColumn[column];
 
             _pieces[numberOfPiecesInColumn, column] = player;
             _piecesPerColumn[column]++;
         }
-
-        public Player GetPieceAt(int row, int column) => _pieces[row, column];
     }
 
     public enum Player
