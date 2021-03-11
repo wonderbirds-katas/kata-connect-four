@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Kata.Logic
 {
@@ -36,15 +35,14 @@ namespace Kata.Logic
 
     public class Engine
     {
-        private List<IWinnerCalculator> WinnerCalculators = new();
+        private readonly List<WinnerCalculator> WinnerCalculators = new();
 
         public Engine()
         {
-            //WinnerCalculators.Add(new ColumnWinnerCalculator());
-            WinnerCalculators.Add(new WinnerCalculator(new RotatedCartesianCoordinateSystem())); // Win by Column
-            WinnerCalculators.Add(new WinnerCalculator(new CartesianCoordinateSystem())); // Win by Row
-            WinnerCalculators.Add(new WinnerCalculator(new AscendingDiagonalCoordinateSystem()));
-            WinnerCalculators.Add(new WinnerCalculator(new DescendingDiagonalCoordinateSystem()));
+            WinnerCalculators.Add(new WinnerCalculator(new IdentityTransformation())); // Win by Column
+            WinnerCalculators.Add(new WinnerCalculator(new TransposedTransformation())); // Win by Row
+            WinnerCalculators.Add(new WinnerCalculator(new AscendingDiagonalTransformation()));
+            WinnerCalculators.Add(new WinnerCalculator(new DescendingDiagonalTransformation()));
         }
 
         public Player CalculateWinner(Board board)
@@ -61,160 +59,14 @@ namespace Kata.Logic
         }
     }
 
-    internal interface IWinnerCalculator
+    public class WinnerCalculator
     {
-        Player CalculateWinner(Board board);
-    }
+        private readonly ICoordinateTransformation _coordinateTransformation;
 
-    public class WinnerCalculator : AbstractWinnerCalculator
-    {
-        private readonly ICoordinateSystem _coordinateSystem;
-
-        public WinnerCalculator(ICoordinateSystem coordinateSystem) =>
-            _coordinateSystem = coordinateSystem;
-
-        protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
-        {
-            for (var diagonal = 0; diagonal < _coordinateSystem.HorizontalPositions; diagonal++)
-            {
-                var positions = _coordinateSystem.MaximumVerticalPosition(diagonal);
-                var result = new List<Player>();
-                for (var position = 0; position < positions; position++)
-                {
-                    var row = _coordinateSystem.GetCartesianRow(diagonal, position);
-                    var column = _coordinateSystem.GetCartesianColumn(diagonal, position);
-                    result.Add(board.GetPieceAt(row, column));
-                }
-
-                yield return result;
-            }
-        }
-    }
-
-    public interface ICoordinateSystem
-    {
-        int HorizontalPositions { get; }
-        int VerticalPositions { get; }
-
-        int MaximumVerticalPosition(int horizontalPosition);
-        int GetCartesianRow(int horizontalPosition, int verticalPosition);
-        int GetCartesianColumn(int horizontalPosition, int verticalPosition);
-    }
-
-    public abstract class DiagonalCoordinateSystem : ICoordinateSystem
-    {
-        public int HorizontalPositions => 12;
-        public int VerticalPositions => HorizontalPositions / 2 - 1;
-
-        public virtual int MaximumVerticalPosition(int horizontalPosition) =>
-            horizontalPosition <= VerticalPositions ? horizontalPosition + 1 : HorizontalPositions - horizontalPosition;
-
-        public abstract int GetCartesianRow(int horizontalPosition, int verticalPosition);
-        public abstract int GetCartesianColumn(int horizontalPosition, int verticalPosition);
-    }
-
-    public class AscendingDiagonalCoordinateSystem : DiagonalCoordinateSystem
-    {
-        public override int GetCartesianRow(int horizontalPosition, int verticalPosition)
-        {
-            if (horizontalPosition <= VerticalPositions)
-            {
-                return VerticalPositions - horizontalPosition + verticalPosition;
-            }
-
-            return verticalPosition;
-        }
-
-        public override int GetCartesianColumn(int horizontalPosition, int verticalPosition)
-        {
-            if (horizontalPosition <= VerticalPositions)
-            {
-                return verticalPosition;
-            }
-
-            var positions = MaximumVerticalPosition(horizontalPosition);
-            return Board.Columns - (positions - verticalPosition);
-        }
-    }
-
-    public class DescendingDiagonalCoordinateSystem : DiagonalCoordinateSystem
-    {
-        public override int GetCartesianRow(int horizontalPosition, int verticalPosition)
-        {
-            if (horizontalPosition <= VerticalPositions + 1)
-            {
-                return verticalPosition;
-            }
-
-            return horizontalPosition - VerticalPositions - 1 + verticalPosition;
-        }
-
-        public override int GetCartesianColumn(int horizontalPosition, int verticalPosition)
-        {
-            if (horizontalPosition <= VerticalPositions + 1)
-            {
-                return horizontalPosition - verticalPosition;
-            }
-
-            return Board.Columns - 1 - verticalPosition;
-        }
-    }
-
-    public class CartesianCoordinateSystem : ICoordinateSystem
-    {
-        public int HorizontalPositions => Board.Columns - 1;
-        public int VerticalPositions => Board.Rows - 1;
-
-        public int MaximumVerticalPosition(int horizontalPosition) => VerticalPositions;
-
-        public int GetCartesianRow(int horizontalPosition, int verticalPosition) => horizontalPosition;
-
-        public int GetCartesianColumn(int horizontalPosition, int verticalPosition) => verticalPosition;
-    }
-
-    public class RotatedCartesianCoordinateSystem : ICoordinateSystem
-    {
-        public int HorizontalPositions => Board.Rows - 1;
-        public int VerticalPositions => Board.Columns - 1;
-
-        public int MaximumVerticalPosition(int horizontalPosition) => HorizontalPositions;
-
-        public int GetCartesianRow(int horizontalPosition, int verticalPosition) => verticalPosition;
-
-        public int GetCartesianColumn(int horizontalPosition, int verticalPosition) => horizontalPosition;
-    }
-
-    public class RowWinnerCalculator : AbstractWinnerCalculator
-    {
-        protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
-        {
-            for (var row = 0; row < Board.Rows; ++row)
-            {
-                yield return Enumerable
-                    .Range(0, Board.Columns)
-                    .Select(i => board.GetPieceAt(row, i))
-                    .ToList();
-            }
-        }
-    }
-
-    public class ColumnWinnerCalculator : AbstractWinnerCalculator
-    {
-        protected override IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
-        {
-            for (var column = 0; column < Board.Columns; column++)
-            {
-                yield return Enumerable
-                    .Range(0, Board.Rows)
-                    .Select(i => board.GetPieceAt(i, column))
-                    .ToList();
-            }
-        }
-    }
-
-    public abstract class AbstractWinnerCalculator : IWinnerCalculator
-    {
         private const int SameColorPiecesRequiredToWin = 4;
+
+        public WinnerCalculator(ICoordinateTransformation coordinateTransformation) =>
+            _coordinateTransformation = coordinateTransformation;
 
         public Player CalculateWinner(Board board)
         {
@@ -222,7 +74,22 @@ namespace Kata.Logic
             return CalculateWinnerByGroupedBoard(columns);
         }
 
-        protected abstract IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board);
+        private IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
+        {
+            for (var horizontalPosition = 0; horizontalPosition < _coordinateTransformation.HorizontalPositions; horizontalPosition++)
+            {
+                var maxVerticalPosition = _coordinateTransformation.MaximumVerticalPosition(horizontalPosition);
+                var result = new List<Player>();
+                for (var verticalPosition = 0; verticalPosition < maxVerticalPosition; verticalPosition++)
+                {
+                    var row = _coordinateTransformation.GetCartesianRow(horizontalPosition, verticalPosition);
+                    var column = _coordinateTransformation.GetCartesianColumn(horizontalPosition, verticalPosition);
+                    result.Add(board.GetPieceAt(row, column));
+                }
+
+                yield return result;
+            }
+        }
 
         private static Player CalculateWinnerByGroupedBoard(IEnumerator<IEnumerable<Player>> groupedBoard)
         {
@@ -272,6 +139,98 @@ namespace Kata.Logic
 
             return winner;
         }
+    }
+
+    public interface ICoordinateTransformation
+    {
+        int HorizontalPositions { get; }
+
+        int MaximumVerticalPosition(int horizontalPosition);
+        int GetCartesianRow(int horizontalPosition, int verticalPosition);
+        int GetCartesianColumn(int horizontalPosition, int verticalPosition);
+    }
+
+    public abstract class DiagonalCoordinateTransformation : ICoordinateTransformation
+    {
+        public int HorizontalPositions => 12;
+        public int VerticalPositions => HorizontalPositions / 2 - 1;
+
+        public virtual int MaximumVerticalPosition(int horizontalPosition) =>
+            horizontalPosition <= VerticalPositions ? horizontalPosition + 1 : HorizontalPositions - horizontalPosition;
+
+        public abstract int GetCartesianRow(int horizontalPosition, int verticalPosition);
+        public abstract int GetCartesianColumn(int horizontalPosition, int verticalPosition);
+    }
+
+    public class AscendingDiagonalTransformation : DiagonalCoordinateTransformation
+    {
+        public override int GetCartesianRow(int horizontalPosition, int verticalPosition)
+        {
+            if (horizontalPosition <= VerticalPositions)
+            {
+                return VerticalPositions - horizontalPosition + verticalPosition;
+            }
+
+            return verticalPosition;
+        }
+
+        public override int GetCartesianColumn(int horizontalPosition, int verticalPosition)
+        {
+            if (horizontalPosition <= VerticalPositions)
+            {
+                return verticalPosition;
+            }
+
+            var positions = MaximumVerticalPosition(horizontalPosition);
+            return Board.Columns - (positions - verticalPosition);
+        }
+    }
+
+    public class DescendingDiagonalTransformation : DiagonalCoordinateTransformation
+    {
+        public override int GetCartesianRow(int horizontalPosition, int verticalPosition)
+        {
+            if (horizontalPosition <= VerticalPositions + 1)
+            {
+                return verticalPosition;
+            }
+
+            return horizontalPosition - VerticalPositions - 1 + verticalPosition;
+        }
+
+        public override int GetCartesianColumn(int horizontalPosition, int verticalPosition)
+        {
+            if (horizontalPosition <= VerticalPositions + 1)
+            {
+                return horizontalPosition - verticalPosition;
+            }
+
+            return Board.Columns - 1 - verticalPosition;
+        }
+    }
+
+    public class TransposedTransformation : ICoordinateTransformation
+    {
+        public int HorizontalPositions => Board.Rows;
+        public int VerticalPositions => Board.Columns;
+
+        public int MaximumVerticalPosition(int horizontalPosition) => VerticalPositions;
+
+        public int GetCartesianRow(int horizontalPosition, int verticalPosition) => horizontalPosition;
+
+        public int GetCartesianColumn(int horizontalPosition, int verticalPosition) => verticalPosition;
+    }
+
+    public class IdentityTransformation : ICoordinateTransformation
+    {
+        public int HorizontalPositions => Board.Columns;
+        public int VerticalPositions => Board.Rows;
+
+        public int MaximumVerticalPosition(int horizontalPosition) => VerticalPositions;
+
+        public int GetCartesianRow(int horizontalPosition, int verticalPosition) => verticalPosition;
+
+        public int GetCartesianColumn(int horizontalPosition, int verticalPosition) => horizontalPosition;
     }
 
     public class Board

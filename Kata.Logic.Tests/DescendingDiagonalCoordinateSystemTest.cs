@@ -13,7 +13,7 @@ namespace Kata.Logic.Tests
         [InlineData(11, 1)]
         public void Positions_GivenDiagonal_ReturnsExpected(int diagonal, int expected)
         {
-            Assert.Equal(expected, new DescendingDiagonalCoordinateSystem().MaximumVerticalPosition(diagonal));
+            Assert.Equal(expected, new DescendingDiagonalTransformation().MaximumVerticalPosition(diagonal));
         }
 
         [Theory]
@@ -24,7 +24,7 @@ namespace Kata.Logic.Tests
         [InlineData(11, 0, 5)]
         public void GetRow__ReturnsExpected(int diagonal, int position, int expected)
         {
-            Assert.Equal(expected, new DescendingDiagonalCoordinateSystem().GetCartesianRow(diagonal, position));
+            Assert.Equal(expected, new DescendingDiagonalTransformation().GetCartesianRow(diagonal, position));
         }
 
         [Theory]
@@ -39,7 +39,7 @@ namespace Kata.Logic.Tests
         [InlineData(10, 0, 6)]
         public void GetColumn__ReturnsExpected(int diagonal, int position, int expected)
         {
-            Assert.Equal(expected, new DescendingDiagonalCoordinateSystem().GetCartesianColumn(diagonal, position));
+            Assert.Equal(expected, new DescendingDiagonalTransformation().GetCartesianColumn(diagonal, position));
         }
     }
 }
