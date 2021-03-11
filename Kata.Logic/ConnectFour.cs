@@ -10,11 +10,13 @@ namespace Kata.Logic
             var engine = new Engine();
 
             var winner = Player.None;
-            using var piecePositionEnumerator = piecesPositionList.GetEnumerator();
-            while(winner == Player.None && piecePositionEnumerator.MoveNext())
+            using (var piecePositionEnumerator = piecesPositionList.GetEnumerator())
             {
-                board.AddPiece(piecePositionEnumerator.Current);
-                winner = engine.CalculateWinner(board);
+                while (winner == Player.None && piecePositionEnumerator.MoveNext())
+                {
+                    board.AddPiece(piecePositionEnumerator.Current);
+                    winner = engine.CalculateWinner(board);
+                }
             }
 
             return winner == Player.None ? "Draw" : winner.ToString();
@@ -23,7 +25,7 @@ namespace Kata.Logic
 
     public class Engine
     {
-        private readonly List<WinnerCalculator> _winnerCalculators = new();
+        private readonly List<WinnerCalculator> _winnerCalculators = new List<WinnerCalculator>();
 
         public Engine()
         {
@@ -36,11 +38,12 @@ namespace Kata.Logic
         public Player CalculateWinner(Board board)
         {
             var winner = Player.None;
-            using var winnerCalculator = _winnerCalculators.GetEnumerator();
-
-            while (winner == Player.None && winnerCalculator.MoveNext())
+            using (var winnerCalculator = _winnerCalculators.GetEnumerator())
             {
-                winner = winnerCalculator.Current.CalculateWinner(board);
+                while (winner == Player.None && winnerCalculator.MoveNext())
+                {
+                    winner = winnerCalculator.Current.CalculateWinner(board);
+                }
             }
 
             return winner;
@@ -58,13 +61,20 @@ namespace Kata.Logic
 
         public Player CalculateWinner(Board board)
         {
-            using var columns = GetGroupedPieces(board).GetEnumerator();
-            return CalculateWinnerByGroupedBoard(columns);
+            var winner = Player.None;
+            using (var columns = GetGroupedPieces(board).GetEnumerator())
+            {
+                winner = CalculateWinnerByGroupedBoard(columns);
+            }
+
+            return winner;
         }
 
         private IEnumerable<IEnumerable<Player>> GetGroupedPieces(Board board)
         {
-            for (var horizontalPosition = 0; horizontalPosition < _coordinateTransformation.HorizontalPositions; horizontalPosition++)
+            for (var horizontalPosition = 0;
+                horizontalPosition < _coordinateTransformation.HorizontalPositions;
+                horizontalPosition++)
             {
                 var maxVerticalPosition = _coordinateTransformation.MaximumVerticalPosition(horizontalPosition);
                 var result = new List<Player>();
@@ -229,7 +239,7 @@ namespace Kata.Logic
 
         private static Player ParsePlayer(string piecePosition)
         {
-            var colorString = piecePosition[2..];
+            var colorString = piecePosition.Substring(2);
             var piece = colorString == "Red" ? Player.Red : Player.Yellow;
             return piece;
         }
