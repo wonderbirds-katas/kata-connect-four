@@ -1,7 +1,7 @@
 # Connect Four Kata Implementation (Codewars.com)
 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbirds-katas/kata-connect-four)
-[![Build Status Badge](https://github.com/wonderbird/kata-connect-four/workflows/.NET/badge.svg)](https://github.com/wonderbird/kata-connect-four/actions?query=workflow%3A%22.NET%22)
+[![Build Status Badge](https://github.com/wonderbirds-katas/kata-connect-four/workflows/.NET/badge.svg)](https://github.com/wonderbirds-katas/kata-connect-four/actions?query=workflow%3A%22.NET%22)
 [![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbirds-katas/kata-connect-four)](https://coveralls.io/github/wonderbirds-katas/kata-connect-four)
 
 This repository implements the [Connect Four Kata as found on CodeWars](https://www.codewars.com/kata/56882731514ec3ec3d000009).
@@ -15,7 +15,8 @@ an [Open Source License](https://www.jetbrains.com/community/opensource/) for th
 
 ### Quick-Start
 
-Click the [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/kata-connect-four) badge (also above) to launch a web IDE.
+Click the [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbirds-katas/kata-connect-four)
+badge (also above) to launch a web IDE.
 
 If that does not work for you or if you'd like to have the project on your local machine, then continue reading.
 
@@ -43,12 +44,12 @@ dotnet build
 dotnet test
 
 # If you like continuous testing then use the dotnet file watcher to trigger your tests
-dotnet watch -p ./RomanNumerals.Logic.Tests test
+dotnet watch --project ./Kata.Logic.Tests test
 
 # As an alternative, run the tests with coverage and produce a coverage report
-rm -r RomanNumerals.Logic.Tests/TestResults && \
+rm -r Kata.Logic.Tests/TestResults && \
   dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml' && \
-  reportgenerator "-reports:RomanNumerals.Logic.Tests/TestResults/*.xml" "-targetdir:report" "-reporttypes:Html;lcov" "-title:RomanNumerals"
+  reportgenerator "-reports:Kata.Logic.Tests/TestResults/*.xml" "-targetdir:report" "-reporttypes:Html;lcov" "-title:Connect Four Kata"
 open report/index.html
 ```
 
