@@ -1,8 +1,8 @@
 # Connect Four Kata Implementation (Codewars.com)
 
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/kata-connect-four)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbirds-katas/kata-connect-four)
 [![Build Status Badge](https://github.com/wonderbird/kata-connect-four/workflows/.NET/badge.svg)](https://github.com/wonderbird/kata-connect-four/actions?query=workflow%3A%22.NET%22)
-[![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbird/kata-connect-four)](https://coveralls.io/github/wonderbird/kata-connect-four)
+[![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbirds-katas/kata-connect-four)](https://coveralls.io/github/wonderbirds-katas/kata-connect-four)
 
 This repository implements the [Connect Four Kata as found on CodeWars](https://www.codewars.com/kata/56882731514ec3ec3d000009).
 
