@@ -62,4 +62,3 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: coverage-reports/lcov.info
-          git-branch: refs/heads/main
