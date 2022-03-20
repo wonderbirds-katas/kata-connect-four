@@ -51,9 +51,6 @@ jobs:
     needs: build-and-test
 
     steps:
-      # the repository is required by codeclimate-action
-      - uses: actions/checkout@v2
-
       - name: Download coverage reports
         uses: actions/download-artifact@v2
         with:
@@ -65,10 +62,3 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: coverage-reports/lcov.info
-
-      - name: Publish coverage report to CodeClimate
-        uses: paambaati/codeclimate-action@v2.7.5
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          coverageLocations: coverage-reports/lcov.info:lcov

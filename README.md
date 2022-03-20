@@ -3,12 +3,6 @@
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/kata-connect-four)
 [![Build Status Badge](https://github.com/wonderbird/kata-connect-four/workflows/.NET/badge.svg)](https://github.com/wonderbird/kata-connect-four/actions?query=workflow%3A%22.NET%22)
 [![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbird/kata-connect-four)](https://coveralls.io/github/wonderbird/kata-connect-four)
-[![Test Coverage (codeclimate)](https://img.shields.io/codeclimate/coverage-letter/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four/trends/test_coverage_total)
-[![Code Maintainability](https://img.shields.io/codeclimate/maintainability-percentage/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four)
-[![Issues in Code](https://img.shields.io/codeclimate/issues/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four/issues)
-[![Technical Debt](https://img.shields.io/codeclimate/tech-debt/wonderbird/kata-connect-four)](https://codeclimate.com/github/wonderbird/kata-connect-four)
-[![CodeScene Code Health](https://codescene.io/projects/13531/status-badges/code-health)](https://codescene.io/projects/13531/jobs/latest-successful/results)
-[![CodeScene System Mastery](https://codescene.io/projects/13531/status-badges/system-mastery)](https://codescene.io/projects/13531/jobs/latest-successful/results)
 
 This repository implements the [Connect Four Kata as found on CodeWars](https://www.codewars.com/kata/56882731514ec3ec3d000009).
 
