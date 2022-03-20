@@ -2,9 +2,8 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build-and-test:
@@ -16,7 +15,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.100
+          dotnet-version: 6.0.x
 
       - name: Install dotnet global tools (coverlet, reportgenerator)
         run: |
@@ -47,25 +46,26 @@ jobs:
   publish-reports:
     runs-on: ubuntu-latest
     name: Publish coverage reports
-  
+    if: github.ref == 'refs/heads/main'
+
     needs: build-and-test
-  
+
     steps:
       # the repository is required by codeclimate-action
       - uses: actions/checkout@v2
-  
+
       - name: Download coverage reports
         uses: actions/download-artifact@v2
         with:
           name: coverage-reports
           path: coverage-reports
-  
+
       - name: Publish coverage report to coveralls.io
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: coverage-reports/lcov.info
-  
+
       - name: Publish coverage report to CodeClimate
         uses: paambaati/codeclimate-action@v2.7.5
         env:
